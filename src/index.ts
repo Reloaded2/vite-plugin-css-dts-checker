@@ -1,8 +1,8 @@
 import path from "node:path";
 import { createFilter, type FilterPattern, type Plugin } from "vite";
-import type TS from "typescript";
-import { defaultDtsCandidates, findDts, readClassNames } from "./dts";
-import { analyzeUsage, collectStyleImports } from "./usage";
+import type TS from "@typescript/typescript6"
+import { defaultDtsCandidates, findDts, readClassNames } from "./dts.js";
+import { analyzeUsage, collectStyleImports } from "./usage.js";
 
 export interface CssDtsCheckerOptions {
   /** Dateien, die geprüft werden. Default: js/ts/jsx/tsx */

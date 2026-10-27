@@ -1,4 +1,4 @@
-import type TS from "typescript";
+import type TS from "@typescript/typescript6";
 
 type Ts = typeof TS;
 
