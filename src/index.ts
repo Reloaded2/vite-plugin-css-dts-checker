@@ -1,6 +1,8 @@
+import ts from "@typescript/typescript6";
+import type TS from "@typescript/typescript6";
 import path from "node:path";
 import { createFilter, type FilterPattern, type Plugin } from "vite";
-import type TS from "@typescript/typescript6"
+
 import { defaultDtsCandidates, findDts, readClassNames } from "./dts.js";
 import { analyzeUsage, collectStyleImports } from "./usage.js";
 
@@ -52,7 +54,7 @@ export default function cssDtsChecker(options: CssDtsCheckerOptions = {}): Plugi
   const isIgnored = (name: string) =>
     ignoreClasses.some((i) => (typeof i === "string" ? i === name : i.test(name)));
 
-  let ts: typeof TS | undefined;
+
   let root = process.cwd();
 
   return {
@@ -68,31 +70,7 @@ export default function cssDtsChecker(options: CssDtsCheckerOptions = {}): Plugi
       const file = stripQuery(id);
       if (!filter(file) || !quickRe.test(code)) return null;
 
-      if (!ts) {
-        const module = await import("typescript");
-        // TypeScript can expose its API through different ESM/CJS interop shapes.
-        // Check the actual API instead of blindly preferring `default`.
-        const candidates: unknown[] = [
-          module,
-          module.default,
-          (module.default as { default?: unknown } | undefined)?.default,
-        ];
-        const api = candidates.find((value): value is typeof TS => {
-          if (!value || typeof value !== "object") return false;
-          const candidate = value as Partial<typeof TS>;
-          return (
-            typeof candidate.createSourceFile === "function" &&
-            candidate.ScriptKind?.TSX !== undefined &&
-            candidate.ScriptTarget?.Latest !== undefined
-          );
-        });
-        if (!api) {
-          throw new Error(
-            "css-dts-checker: Cannot load the TypeScript compiler API (missing ScriptKind/createSourceFile)."
-          );
-        }
-        ts = api;
-      }
+
       const T = ts;
 
       const ext = path.extname(file) as keyof typeof SCRIPT_KIND;
